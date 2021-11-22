@@ -69,25 +69,40 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id='logbtn'>Console Log</button>
+      <button id='errorbtn'>Console Error</button>
+      <button id='countbtn'>Console Count</button>
+      <button id='warnbtn'>Console Warn</button>
+      <button id='assertbtn'>Console Assert</button>
+      <button id='clearbtn'>Console Clear</button>
+      <button id='dirbtn'>Console Dir</button>
+      <button id='dirxmlbtn'>Console dirxml</button>
+      <button id='groupstartbtn'>Console Group Start</button>
+      <button id='groupendbtn'>Console Group End</button>
+      <button id='tablebtn'>Console Table</button>
+      <button id='timerstartbtn'>Start Timer</button>
+      <button id='timerendbtn'>End Timer</button>
+      <button id='tracebtn'>Console Trace</button>
+      <button id='globalerrorbtn'>Trigger a Global Error</button>
     </section>
   </main>
 
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "82b43d4993c146738a374daf87c04d17"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+                        
+  <script>
+    class TimerError extends Error {
+      constructor(message) {
+        super(message)
+        this.name = 'TimerError'
+      }
+    }
+    
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -102,6 +117,86 @@
 
     // Start your code here
     // You may move this JS to another file if you wish
+    let timerstarted = false
+    document.querySelector('#logbtn').addEventListener('click', event=>{
+      console.log('Log button')
+    })
+
+    document.querySelector('#errorbtn').addEventListener('click', event=>{
+      console.error('Error button')
+    })
+
+    document.querySelector('#countbtn').addEventListener('click', event=>{
+      console.count()
+    })
+
+    document.querySelector('#warnbtn').addEventListener('click', event=>{
+      console.warn('Warn button')
+    })
+
+    document.querySelector('#assertbtn').addEventListener('click', event=>{
+      console.assert(5 % 2 === 0, {errorMsg: '5 is not an even number'})
+    })
+
+    document.querySelector('#clearbtn').addEventListener('click', event=>{
+      console.clear()
+    })
+
+    document.querySelector('#dirbtn').addEventListener('click', event=>{
+      console.dir([1, 2, 3])
+    })
+
+    document.querySelector('#dirxmlbtn').addEventListener('click', event=>{
+      console.dirxml([1, 2, 3])
+    })
+
+    document.querySelector('#groupstartbtn').addEventListener('click', event=>{
+      console.group()
+      console.log('Next level')
+    })
+
+    document.querySelector('#groupendbtn').addEventListener('click', event=>{
+      console.groupEnd()
+      console.log('Previous level')
+    })
+
+    document.querySelector('#tablebtn').addEventListener('click', event=>{
+      console.table(['Steph Curry', 'Lebron James', 'Michael Jordan'])
+    })
+
+    document.querySelector('#timerstartbtn').addEventListener('click', event=>{
+      console.time()
+      timerstarted = true
+    })
+
+    document.querySelector('#timerendbtn').addEventListener('click', event=>{
+      try {
+        if(timerstarted) {
+          console.timeEnd()
+          timerstarted = false
+        } else {
+          console.timeEnd()
+          timerstarted = false
+          throw new TimerError('Timer not yet started')
+        }
+      } catch (e) {
+        if(e instanceof TimerError) {
+          console.log('You must start the timer before you can end it')
+        } else {
+          console.log('You broke the program')
+        }
+      } finally {
+        console.log('Try other buttons too')
+      }
+    })
+
+    document.querySelector('#tracebtn').addEventListener('click', event=>{
+      console.trace()
+    })
+
+    document.querySelector('#globalerrorbtn').addEventListener('click', event=>{
+      throw 'Global Error Thrown'
+    })
   </script>
 </body>
 
